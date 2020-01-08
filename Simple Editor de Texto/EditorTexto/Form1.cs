@@ -13,11 +13,9 @@ using System.Text.RegularExpressions;
 
 namespace EditorTexto
 {
-
-
     public partial class EditText : Form
     {
-        private bool Move;
+        private new bool Move;
         private Point Position;
         static FileOperations Fs = new FileOperations();
 
@@ -28,6 +26,7 @@ namespace EditorTexto
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            
             //Se realiza un render para el Menustrip y sobreescriba los colores por defecto
             Opciones.Renderer = new ToolStripProfessionalRenderer(new ColorsMenuStrip());
             //borra el recuadro de la imagen por defecto
@@ -43,7 +42,16 @@ namespace EditorTexto
             for (int i = 7; i <= 30; i++)
                 NumberFont.Items.Add(i.ToString());
 
+            // inicializar con un tipo de fuente
+            Fonts_load.SelectedItem = TextContent.Font.FontFamily;
+            Fonts_load.Text = TextContent.Font.FontFamily.Name;
+
+            NumberFont.SelectedItem = TextContent.Font.Size;
+            NumberFont.Text = TextContent.Font.Size.ToString();
+
+            Leyend_Ocultar();
         }
+      
         //Eventos permitiran mover el formulario sin bordes
         private void MoveFormMouseDown(object sender, MouseEventArgs e)
         {
@@ -54,9 +62,12 @@ namespace EditorTexto
                 Position = new Point(e.X, e.Y);
             }
             else
+            {
                 Move = false;
-   
+            }
+               
         }
+    
         // Permite mover la ventana
         private void MoveFormMouseMove(object sender, MouseEventArgs e)
         {
@@ -71,28 +82,35 @@ namespace EditorTexto
             }
         }
        
-       // Establece un valor falso si se suelta el boton del raton
+        // Establece un valor falso si se suelta el boton del raton
         private void MoveFormMouseUp(object sender, MouseEventArgs e)
         {
             Move = false;
         }
 
-
         // Establece cuantas palabras encuentra en el texto
         private int TotalWords(string Text)
         {
             // se crea el patron para validar la expresion regulas
+            //\^[0-9]
+            
             string pattern = @"\b[A-Za-z]";
             Regex validation = new Regex(pattern);
             // Recupera cuantas veces aparece el patron en el texto
             int count = validation.Matches(Text).Count;
+           /* if(Text.Contains("\n") == true)
+            {
+                count++;
+            }*/
             return count;
 
 
         }
+
         //Obtiene el total de palabras en el texto
         private int TWords() => (TotalWords(TextContent.Text));
         private int TWords(string text) => (TotalWords(text));
+
         //modifica el tipo de fuente seleccionado
         private void ModifyTextRichText(FontStyle fontX)
         {
@@ -100,6 +118,7 @@ namespace EditorTexto
                    TextContent.Font.Size, fontX);
 
         }
+
         //Resumen
         //Determina las posiciones de las coincidencias del texto buscado en el RichText
         private void MovePositionStringSearch(string textSearch)
@@ -107,6 +126,11 @@ namespace EditorTexto
            
             int at = 0;
             int indexStar = 0;
+
+            // Quitamos el coloreado de la busqueda anterior
+            TextContent.Select(0, TextContent.TextLength);
+            TextContent.SelectionBackColor = Color.Transparent;
+
             while (true)
             {
                 //determina la posicion que se encuenta la coincidencia del texto
@@ -124,6 +148,7 @@ namespace EditorTexto
                 TextContent.SelectionBackColor = Color.Bisque;
             }
         }
+
         //Establece la pagina que se va a imprimir 
         private void Print_Document(object sender, System.Drawing.Printing.PrintPageEventArgs e)
         {
@@ -136,43 +161,62 @@ namespace EditorTexto
 
         }
 
-
-
-
         // permite la apertura del archivo
         private void OpenFileSubMenuBtn(object sender, EventArgs e)
         {
+            // Obtenemos el nombre de la maquina
+            string name = Environment.MachineName;
+            OpenDialog.InitialDirectory += name + "\\Desktop\\";
+            OpenDialog.CheckFileExists = true;
+            OpenDialog.Title = "Abrir";
             if (OpenDialog.ShowDialog() == DialogResult.OK)
             {
                 //Obtiene el nombre del archivo
                 NameFilePath.Text = Path.GetFileName(OpenDialog.FileName);
                 // se establece la ruta de acceso
                 Fs.Path = OpenDialog.FileName;
-                TextContent.Text = " ";
+                TextContent.Text = "";
                 // obtiene el texto del archivo
                 string GetTextFile = Fs.ReadFile();
                 //coloca el archivo en el RichText
-                TextContent.Text = GetTextFile;
+                TextContent.Text = GetTextFile.Trim();
                 //Obtiene el total de palabras encontradas
                 Words.Text = TWords(GetTextFile).ToString();
-
-
             }
         }
+      
         //guarda el archivo
         private void SaveFileBtn(object sender, EventArgs e)
         {
+            string name = Environment.MachineName;
+
             //verifica mediante una variable bandera si el archivo ya se ha abrio
             if (Fs.Flag)
                 //Escribe en el archivo.
                 Fs.WriteFile(TextContent.Text);
             else
-                MessageBox.Show("No contienes, ningun archivo cargado",
-                    "¡ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
+            // Abrimos OpenDialog para indicar donde queremos
+            // Guardar el archivo
+            OpenDialog.InitialDirectory += name + "\\Desktop\\";
 
+            //Ponemos un nombre al archivo por Defecto
+            OpenDialog.FileName = "Document.rtf";
 
+            //ponemos la verifiacacion de esxistencia del archivo como falsa
+            OpenDialog.CheckFileExists =false;
+            OpenDialog.Title = "Guardar como";
+           
+            if (OpenDialog.ShowDialog() == DialogResult.OK)
+            {
+                //Obtiene el nombre del archivo
+                NameFilePath.Text = Path.GetFileName(OpenDialog.FileName);
+                // se establece la ruta de acceso
+                Fs.Path = OpenDialog.FileName;
+                Fs.WriteFile(TextContent.Text);
+            }
         }
+      
         //Determina el tipo de fuente(RichText) mediante el evento OnChange de Combobox
         private void SelectTypeFontCombobox(object sender, EventArgs e)
         {
@@ -181,6 +225,7 @@ namespace EditorTexto
                 TextContent.SelectionFont = new Font(Fonts_load.Text,
                      TextContent.Font.Size);
         }
+
         //Determina el tamaño de fuente(RichText) mediante el evento OnChange de Combobox
         private void SelectedNumberFontCombobox(object sender, EventArgs e)
         {
@@ -188,6 +233,7 @@ namespace EditorTexto
                 TextContent.SelectionFont = new Font(TextContent.Font.FontFamily,
                     Int32.Parse(NumberFont.Text));
         }
+        
         //Determina el color para el texto seleccionado
         private void SelectColor(object sender, EventArgs e)
         {
@@ -196,6 +242,7 @@ namespace EditorTexto
                 TextContent.SelectionColor = colorDialog.Color;
 
         }
+    
         //Determina el total de palabras mediante el evento KeyPress de RichText
         private void TotalWords(object sender, KeyPressEventArgs e)
         {
@@ -208,8 +255,8 @@ namespace EditorTexto
         //Determina el total de palabras mediante el evento KeyUp de RichText
         private void TotalWordsKeyUp(object sender, KeyEventArgs e)
         {
-            // Si se preciona la tecla de  backspace determina cuantas palabras exiten
-            if (e.KeyCode == Keys.Back)
+            // Si se preciona la tecla de  backspace y tecla enter determina cuantas palabras exiten
+            if (e.KeyCode == Keys.Back || e.KeyCode == Keys.Enter)
                 Words.Text = TWords().ToString();
         }
 
@@ -225,22 +272,30 @@ namespace EditorTexto
         {
             TextContent.SelectionAlignment = HorizontalAlignment.Right;
         }
+      
         //Justifica el texto al centro
         private void AlignmentCenter(object sender, EventArgs e)
         {
             TextContent.SelectionAlignment = HorizontalAlignment.Center;
         }
+       
         //Justifica el texto a la Izquierda
-
         private void AlignmentLeft(object sender, EventArgs e)
         {
             TextContent.SelectionAlignment = HorizontalAlignment.Left;
         }
+       
         //Establece viñetas para el texto seleccionado
         private void Bullets(object sender, EventArgs e)
         {
-            TextContent.SelectionBullet = true;
+            //TextContent.SelectionBullet = true;
+            
+            /* agrege esto  para que puedas tanto quitar como 
+             * poner las viñetas. 
+            */
+            TextContent.SelectionBullet = !(TextContent.SelectionBullet);
         }
+
         //Establece,  texto underline 
         private void TextUnderlineEvent(object sender, EventArgs e)
         {
@@ -249,6 +304,7 @@ namespace EditorTexto
             else
                 ModifyTextRichText(FontStyle.Regular);
         }
+        
         //Establece el texto de forma cursiva
         private void TextCursiveEvent(object sender, EventArgs e)
         {
@@ -256,10 +312,8 @@ namespace EditorTexto
                 ModifyTextRichText(FontStyle.Italic);
             else
                 ModifyTextRichText(FontStyle.Regular);
-
-
-
         }
+      
         //Establece el texto de forma bold
         private void TextBEvent(object sender, EventArgs e)
         {
@@ -267,8 +321,8 @@ namespace EditorTexto
                 ModifyTextRichText(FontStyle.Bold);
             else
                 ModifyTextRichText(FontStyle.Regular);
-
         }
+       
         //Establece el texto tachado
         private void StrikethroughTextEvent(object sender, EventArgs e)
         {
@@ -276,8 +330,8 @@ namespace EditorTexto
                 ModifyTextRichText(FontStyle.Strikeout);
             else
                 ModifyTextRichText(FontStyle.Regular);
-
         }
+      
         //Establece el color de fondo del texto subrayado
         private void SelectionColor(object sender, EventArgs e)
         {
@@ -287,6 +341,7 @@ namespace EditorTexto
 
             }
         }
+        
         //Copia el texto del RichText
         private void CopyTextBtn(object sender, EventArgs e)
         {
@@ -295,12 +350,14 @@ namespace EditorTexto
                 TextContent.Copy();
             }
         }
+      
         //Pega el texto del RichText
         private void PasteTextBtn(object sender, EventArgs e)
         {
             if (TextContent.Text != " ")
                 TextContent.Paste();
         }
+       
         //imprime el documento
         private void PrintDocument(object sender, EventArgs e)
         {
@@ -342,9 +399,6 @@ namespace EditorTexto
 
         }
       
-
-
-      
         //Busca las palabras que coincidan con el texto, cada que se presiona
         //Enter busca la palabra y la subraya
         private void SearchWords(object sender, KeyPressEventArgs e)
@@ -352,9 +406,8 @@ namespace EditorTexto
             //Verifica si se presiono la tecla de enter y si el campo no esta vacio
             if (e.KeyChar == 13 && InputSearchRich.Text.Length > 0)
                  MovePositionStringSearch(InputSearchRich.Text);
-
-
         }
+       
         //Borrra el todo el contenido del RichText
         private void DeleteText_Click(object sender, EventArgs e)
         {
@@ -373,9 +426,97 @@ namespace EditorTexto
             }
 
         }
+        
         //Minimiza la ventana
         private void buttMimizedBtnClick(object sender, EventArgs e) => this.WindowState = FormWindowState.Minimized;
+      
         //Cierra la aplicacion 
         private void ExitAppSubMenu(object sender, EventArgs e) => Application.Exit();
+
+        // Muestra un panel Con un titulo y descripcion de las opciones
+        private void Leyend(Control control,string Header,string Text)
+        {
+            Titulo.Text = Header;
+            Descripcion.AutoSize = true;
+            Descripcion.TextAlign = ContentAlignment.MiddleLeft;
+            Descripcion.Text = Text;
+
+            panel2.AutoSize = true;
+            panel2.Height += 1;
+            panel2.Visible = true; 
+            panel2.Location = new Point(control.Location.X, 95);
+
+        }
+
+        // ocultar el panel de la leyenda
+        private void Leyend_Ocultar()
+        {
+            Titulo.Text = null;
+            Descripcion.Text = null;
+            Descripcion.Size = new Size(45, 17);
+
+            panel2.Visible = false;
+            panel2.Location = new Point(11, 488);
+            panel2.Size = new Size(205, 50);
+
+        }
+
+        // evento MouseLeave Para invocar al Metodo: Leyend_Ocultar()
+        private void Ocultar(object sender, EventArgs e) => Leyend_Ocultar();
+
+        //Creamos e invocamos las respectivas leyendas de Cada Opcion
+        private void Bold_MouseHover(object sender, EventArgs e) 
+        => Leyend(Bold, "Negrita", "Activa formato de negrita en el texto");
+       
+        private void Cursive_MouseHover(object sender, EventArgs e)
+         => Leyend(Cursive, "Cursiva", "Activa formato de Cursiva en el texto");
+        
+        private void Underline_MouseHover(object sender, EventArgs e)
+        => Leyend(Underline, "Subrayado", "Suraya el texto selecccionado");
+
+        private void CuentaGotas_MouseHover(object sender, EventArgs e)
+         => Leyend(CuentaGotas, "Color de fuente ", "Cambia el color del texto");
+
+        private void PaintLetter_MouseHover(object sender, EventArgs e) 
+        => Leyend(PaintLetter, "Color de resaltado del texto", "Cambia el aspecto del texto" +
+            " como si estuviera marcado con un marcador");
+
+        private void Fonts_load_MouseHover(object sender, EventArgs e)
+        => Leyend(Fonts_load, "Fuente", "Cambia la fuente del texto");
+
+        private void NumberFont_MouseHover(object sender, EventArgs e)
+        => Leyend(NumberFont, "Tamaño de fuente", "Cambia Tamaño de la fuente del texto");
+
+        private void listText_MouseHover(object sender, EventArgs e)
+         => Leyend(listText, "viñetas", "Inicia una lista de viñetas");
+
+        private void Justify_MouseHover(object sender, EventArgs e)
+        => Leyend(Justify, "Justificar", "Alinea el texto en los margenes izqierdo y derecho," +
+            " agrega especios adicionales de ser necesario");
+
+        private void Center_MouseHover(object sender, EventArgs e)
+        => Leyend(Center, "Centrar", "Centra el texto");
+
+        private void Justify_left_MouseHover(object sender, EventArgs e)
+        => Leyend(Justify_left, "Justificacion a la izquierda", "Alinea el texto a la izquierda");
+
+        private void Justify_Rigth_MouseHover(object sender, EventArgs e)
+        => Leyend(Justify_Rigth, "Justificacion a la derecha", "Alinea el texto a la derecha");
+
+        private void UnderlineMedium_MouseHover(object sender, EventArgs e)
+        => Leyend(UnderlineMedium, "Tachado", "Tacha una linea en medio del texto seleccionado");
+
+        private void DeleteText_MouseHover(object sender, EventArgs e)
+        => Leyend(DeleteText, "Borrar", "Borra la seleccion");
+
+        private void Copy_MouseHover(object sender, EventArgs e)
+        => Leyend(Copy, "Capiar", "Copia la seleccion y la coloca en el Portapapeles");
+
+        private void Paste_MouseHover(object sender, EventArgs e)
+        => Leyend(Paste, "Pegar", "Pega el contedio del Portapapeles");
+
+        private void InputSearchRich_MouseHover(object sender, EventArgs e)
+        => Leyend(InputSearchRich, "Bucar", "Busca texto en el documento");
+
     }
 }
