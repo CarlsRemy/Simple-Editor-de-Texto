@@ -150,7 +150,7 @@ namespace EditorTexto
             this.toolStripContainer1.Size = new System.Drawing.Size(150, 175);
             this.toolStripContainer1.TabIndex = 3;
             this.toolStripContainer1.Text = "toolStripContainer1";
-            //  
+            // 
             // Opciones
             // 
             this.Opciones.AutoSize = false;
@@ -592,7 +592,7 @@ namespace EditorTexto
             this.Descripcion.AutoSize = true;
             this.Descripcion.BackColor = System.Drawing.Color.Transparent;
             this.Descripcion.Font = new System.Drawing.Font("Century Gothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Descripcion.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(100)))), ((int)(((byte)(198)))));
+            this.Descripcion.ForeColor = System.Drawing.Color.Black;
             this.Descripcion.Location = new System.Drawing.Point(6, 25);
             this.Descripcion.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.Descripcion.MaximumSize = new System.Drawing.Size(300, 0);
@@ -606,7 +606,7 @@ namespace EditorTexto
             this.Titulo.AutoSize = true;
             this.Titulo.BackColor = System.Drawing.Color.Transparent;
             this.Titulo.Font = new System.Drawing.Font("Century Gothic", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Titulo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(100)))), ((int)(((byte)(183)))));
+            this.Titulo.ForeColor = System.Drawing.Color.Black;
             this.Titulo.Location = new System.Drawing.Point(3, 3);
             this.Titulo.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.Titulo.Name = "Titulo";

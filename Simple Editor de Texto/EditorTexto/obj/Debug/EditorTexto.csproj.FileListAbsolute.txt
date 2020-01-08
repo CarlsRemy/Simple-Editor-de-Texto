@@ -16,3 +16,12 @@ C:\Users\Carlos\Desktop\C#\Simple Editor de Texto\EditorTexto\obj\Debug\EditorTe
 C:\Users\Carlos\Desktop\C#\Simple Editor de Texto\EditorTexto\obj\Debug\EditorTexto.csproj.GenerateResource.cache
 C:\Users\Carlos\Desktop\C#\Simple Editor de Texto\EditorTexto\obj\Debug\EditorTexto.exe
 C:\Users\Carlos\Desktop\C#\Simple Editor de Texto\EditorTexto\obj\Debug\EditorTexto.pdb
+C:\Users\Carlos\Desktop\New folder (4)\Simple Editor de Texto\EditorTexto\bin\Debug\EditorTexto.exe.config
+C:\Users\Carlos\Desktop\New folder (4)\Simple Editor de Texto\EditorTexto\bin\Debug\EditorTexto.exe
+C:\Users\Carlos\Desktop\New folder (4)\Simple Editor de Texto\EditorTexto\bin\Debug\EditorTexto.pdb
+C:\Users\Carlos\Desktop\New folder (4)\Simple Editor de Texto\EditorTexto\obj\Debug\EditorTexto.csprojAssemblyReference.cache
+C:\Users\Carlos\Desktop\New folder (4)\Simple Editor de Texto\EditorTexto\obj\Debug\EditorTexto.EditText.resources
+C:\Users\Carlos\Desktop\New folder (4)\Simple Editor de Texto\EditorTexto\obj\Debug\EditorTexto.Properties.Resources.resources
+C:\Users\Carlos\Desktop\New folder (4)\Simple Editor de Texto\EditorTexto\obj\Debug\EditorTexto.csproj.GenerateResource.cache
+C:\Users\Carlos\Desktop\New folder (4)\Simple Editor de Texto\EditorTexto\obj\Debug\EditorTexto.exe
+C:\Users\Carlos\Desktop\New folder (4)\Simple Editor de Texto\EditorTexto\obj\Debug\EditorTexto.pdb

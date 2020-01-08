@@ -99,9 +99,11 @@ namespace EditorTexto
              // Si no lo crea
               else
               {
-                __FSFile = new FileStream(this.__strPath,
+                 __FSFile = new FileStream(this.__strPath,
                         FileMode.CreateNew,
                         FileAccess.ReadWrite);
+                 
+                 _Flag = true;
               }
         }
      

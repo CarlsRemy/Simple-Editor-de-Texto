@@ -171,10 +171,9 @@ namespace EditorTexto
             OpenDialog.Title = "Abrir";
             if (OpenDialog.ShowDialog() == DialogResult.OK)
             {
-                //Obtiene el nombre del archivo
-                NameFilePath.Text = Path.GetFileName(OpenDialog.FileName);
-                // se establece la ruta de acceso
                 Fs.Path = OpenDialog.FileName;
+
+                NameFilePath.Text = Path.GetFileName(OpenDialog.FileName);
                 TextContent.Text = "";
                 // obtiene el texto del archivo
                 string GetTextFile = Fs.ReadFile();
@@ -184,7 +183,7 @@ namespace EditorTexto
                 Words.Text = TWords(GetTextFile).ToString();
             }
         }
-      
+
         //guarda el archivo
         private void SaveFileBtn(object sender, EventArgs e)
         {
@@ -195,25 +194,26 @@ namespace EditorTexto
                 //Escribe en el archivo.
                 Fs.WriteFile(TextContent.Text);
             else
+            { 
+                // Abrimos OpenDialog para indicar donde queremos
+                // Guardar el archivo
+                OpenDialog.InitialDirectory += name + "\\Desktop\\";
 
-            // Abrimos OpenDialog para indicar donde queremos
-            // Guardar el archivo
-            OpenDialog.InitialDirectory += name + "\\Desktop\\";
+                //Ponemos un nombre al archivo por Defecto
+                OpenDialog.FileName = "Document.rtf";
 
-            //Ponemos un nombre al archivo por Defecto
-            OpenDialog.FileName = "Document.rtf";
-
-            //ponemos la verifiacacion de esxistencia del archivo como falsa
-            OpenDialog.CheckFileExists =false;
-            OpenDialog.Title = "Guardar como";
+                //ponemos la verifiacacion de esxistencia del archivo como falsa
+                OpenDialog.CheckFileExists =false;
+                OpenDialog.Title = "Guardar como";
            
-            if (OpenDialog.ShowDialog() == DialogResult.OK)
-            {
-                //Obtiene el nombre del archivo
-                NameFilePath.Text = Path.GetFileName(OpenDialog.FileName);
-                // se establece la ruta de acceso
-                Fs.Path = OpenDialog.FileName;
-                Fs.WriteFile(TextContent.Text);
+                if (OpenDialog.ShowDialog() == DialogResult.OK)
+                {
+                    // se establece la ruta de acceso
+                    Fs.Path = OpenDialog.FileName;
+                    NameFilePath.Text = Path.GetFileName(OpenDialog.FileName);
+                    Fs.WriteFile(TextContent.Text);
+                }
+                
             }
         }
       
